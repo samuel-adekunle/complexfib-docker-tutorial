@@ -4,6 +4,8 @@ import {Link} from "react-router-dom"
 export default function OtherPage() {
     return <div>
         I'm some other page.
-        <Link to="/">Go back home</Link>
+        <div>
+            <Link to="/">Go back home</Link>
+        </div>
     </div>
 }

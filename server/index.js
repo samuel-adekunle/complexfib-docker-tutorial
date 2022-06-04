@@ -11,15 +11,15 @@ app.use(bodyParser.json())
 
 // Postgres Database Setup
 const {Pool} = require("pg")
-const pgClient = new Pool({
-    user: keys.pgUser,
-    host: keys.pgHost,
-    database: keys.pgDatabase,
-    password: keys.pgPassword,
-    port: keys.pgPort
+const postgresClient = new Pool({
+    user: keys.postgresUser,
+    host: keys.postgresHost,
+    database: keys.postgresDatabase,
+    password: keys.postgresPassword,
+    port: keys.postgresPort
 })
 
-pgClient.on("connect", (client) => {
+postgresClient.on("connect", (client) => {
     client
         .query("CREATE TABLE IF NOT EXISTS values (number INT)")
         .catch((err) => console.error(err));
@@ -27,10 +27,10 @@ pgClient.on("connect", (client) => {
 
 // Redis Client Setup
 const redis = require("redis")
+
 const redisClient = redis.createClient({
-    url: `redis://${keys.redisHost}:${keys.redisPort}`,
     socket: {
-        reconnectStrategy: () => 1000
+        port: keys.redisPort, host: keys.redisHost, reconnectStrategy: () => 1000
     }
 })
 
@@ -43,7 +43,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/values/all", async (req, res) => {
-    const values = await pgClient.query("SELECT * from values")
+    const values = await postgresClient.query("SELECT * from values")
     res.send(values.rows)
 })
 
@@ -53,20 +53,22 @@ app.get("/values/current", async (req, res) => {
 })
 
 app.post("/values", async (req, res) => {
-    const index = parseInt(req.body.index)
+    const index = req.body.index
 
-    if (index > 40) {
+    if (parseInt(index) > 40) {
         return res.status(422).send("Index over 40 is too high.")
     }
 
-    redisClient.hSet('values', index, "TODO(worker): Populate this field.")
-    redisPublisher.publish("insert", index)
+    await redisClient.hSet("values", index, "TODO(worker): Populate this field.")
+    await redisPublisher.publish("insert", index)
 
-    pgClient.query("INSERT INTO values(number) VALUES($1)", [index])
+    postgresClient.query("INSERT INTO values(number) VALUES($1)", [index])
 
     res.send({working: true})
 })
 
-app.listen(5000, () => {
-    console.log("Listening on 0.0.0.0:5000")
+app.listen(keys.port, async () => {
+    await redisClient.connect()
+    await redisPublisher.connect()
+    console.log(`Listening on 0.0.0.0:${keys.port}`)
 })

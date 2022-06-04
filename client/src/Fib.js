@@ -38,7 +38,7 @@ export default function Fib() {
 
         <h3>Indexes I have seen:</h3>
         <div>
-            {seenIndexes.join(", ")}
+            {seenIndexes.map(({number}) => number).join(", ")}
         </div>
 
         <h3>Calculated Values:</h3>

@@ -13,10 +13,10 @@ jobs:
 
       - name: Build images
         run: |
-        docker build ./client --file ./client/Dockerfile -t samueladekunle/complexfib_client
-        docker build ./nginx --file ./nginx/Dockerfile -t samueladekunle/complexfib_nginx
-        docker build ./server --file ./server/Dockerfile -t samueladekunle/complexfib_server
-        docker build ./worker --file ./worker/Dockerfile -t samueladekunle/complexfib_worker
+          docker build ./client --file ./client/Dockerfile -t samueladekunle/complexfib_client
+          docker build ./nginx --file ./nginx/Dockerfile -t samueladekunle/complexfib_nginx
+          docker build ./server --file ./server/Dockerfile -t samueladekunle/complexfib_server
+          docker build ./worker --file ./worker/Dockerfile -t samueladekunle/complexfib_worker
 
       - name: Authenticate docker hub
         run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID"

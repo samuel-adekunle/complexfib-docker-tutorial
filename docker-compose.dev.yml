@@ -53,6 +53,6 @@ services:
       - client
     build:
       context: nginx
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "80:80"

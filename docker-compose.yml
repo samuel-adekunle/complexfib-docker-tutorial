@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  worker:
+    image: samueladekunle2002/complexfib_worker
+    environment:
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+  server:
+    image: samueladekunle2002/complexfib_server
+    hostname: api
+    environment:
+      - PORT=$PORT
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_HOST=$POSTGRES_HOST
+      - POSTGRES_DATABASE=$POSTGRES_DATABASE
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_PORT=$POSTGRES_PORT
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+  client:
+    image: samueladekunle2002/complexfib_client
+    hostname: client
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+  nginx:
+    image: samueladekunle2002/complexfib_nginx
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+    ports:
+      - "80:80"

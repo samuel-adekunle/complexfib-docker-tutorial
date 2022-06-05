@@ -19,7 +19,7 @@ jobs:
           docker build ./worker --file ./worker/Dockerfile -t samueladekunle/complexfib_worker
 
       - name: Authenticate docker hub
-        run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID"
+        run: docker login -u "$DOCKER_ID" -p "$DOCKER_PASSWORD"
         env:
           DOCKER_ID: ${{ secrets.DOCKER_ID }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

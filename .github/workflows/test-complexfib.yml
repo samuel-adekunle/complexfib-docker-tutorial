@@ -1,0 +1,17 @@
+name: Test complexfib
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "[Cache] Build react test docker image"
+        run: docker build ./client --file ./client/Dockerfile.dev --tag samueladekunle/complexfib_client-test
+
+      - name: Run the jest tests
+        run: docker run samueladekunle/complexfib_client-test npm run test -- --coverage

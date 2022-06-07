@@ -6,7 +6,7 @@ import OtherPage from "./OtherPage";
 function Home() {
     return <div>
         <header>
-            <h1>Learn react!</h1>
+            <h1>Learn react 2.0!</h1>
             <div>
                 <Link to="/">Home</Link>
             </div>

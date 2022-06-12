@@ -42,3 +42,39 @@ jobs:
           docker push samueladekunle2002/complexfib_nginx
           docker push samueladekunle2002/complexfib_server
           docker push samueladekunle2002/complexfib_worker
+          
+          AKIA53ZEUM4Q7EJMTZG4
+          hzn4923DsWMBOgGjVPHvYZ/fbU+pLvsRIsSd/8Rn
+
+
+
+  deploy:
+    needs: [ publish ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          role-to-assume: arn:aws:iam::953022703393:user/complexfib-deploy
+
+      - name: Upload docker compose file to S3
+        run: aws s3 cp docker-compose.yml s3://elasticbeanstalk-eu-west-2-953022703393/docker-compose-${{ github.sha }}.yml
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name complexfib \
+            --version-label "complexfib-ver-${{ github.sha }}" \
+            --description "commit-sha-${{ github.sha }}" \
+            --source-bundle "S3Bucket=elasticbeanstalk-eu-west-2-953022703393,S3Key=docker-compose-${{ github.sha }}.yml"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: aws elasticbeanstalk update-environment \
+          --environment-name Complexfib-env \
+          --version-label "complexfib-ver-${{ github.sha }}"

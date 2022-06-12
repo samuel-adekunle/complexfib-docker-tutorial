@@ -56,7 +56,6 @@ jobs:
           aws-region: eu-west-2
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          role-to-assume: arn:aws:iam::953022703393:user/complexfib-deploy
 
       - name: Upload docker compose file to S3
         run: aws s3 cp docker-compose.yml s3://elasticbeanstalk-eu-west-2-953022703393/docker-compose-${{ github.sha }}.yml

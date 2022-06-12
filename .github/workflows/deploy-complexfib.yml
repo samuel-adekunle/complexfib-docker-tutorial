@@ -42,11 +42,6 @@ jobs:
           docker push samueladekunle2002/complexfib_nginx
           docker push samueladekunle2002/complexfib_server
           docker push samueladekunle2002/complexfib_worker
-          
-          AKIA53ZEUM4Q7EJMTZG4
-          hzn4923DsWMBOgGjVPHvYZ/fbU+pLvsRIsSd/8Rn
-
-
 
   deploy:
     needs: [ publish ]
